@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="WP12_jj222kc_weatherAppModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Position">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Lat" Type="Double" Nullable="false" />
+    <Property Name="Lng" Type="Double" Nullable="false" />
+    <NavigationProperty Name="Weathers" Relationship="Self.FK_Weather_Position1" FromRole="Position" ToRole="Weather" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="Weather">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Temperature" Type="Double" Nullable="false" />
+    <Property Name="ValidTime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="City" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="NextUpdate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="Symbol" Type="Int16" Nullable="false" />
+    <Property Name="PositionId" Type="Int32" Nullable="false" />
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <NavigationProperty Name="Position" Relationship="Self.FK_Weather_Position1" FromRole="Weather" ToRole="Position" />
+  </EntityType>
+  <Association Name="FK_Weather_Position1">
+    <End Role="Position" Type="Self.Position" Multiplicity="1" />
+    <End Role="Weather" Type="Self.Weather" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Position">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Weather">
+        <PropertyRef Name="PositionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="WP12_jj222kc_weatherAppEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Positions" EntityType="Self.Position" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <EntitySet Name="Weathers" EntityType="Self.Weather" />
+    <AssociationSet Name="FK_Weather_Position1" Association="Self.FK_Weather_Position1">
+      <End Role="Position" EntitySet="Positions" />
+      <End Role="Weather" EntitySet="Weathers" />
+    </AssociationSet>
+    <FunctionImport Name="sp_alterdiagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="Int32" />
+      <Parameter Name="definition" Mode="In" Type="Binary" />
+    </FunctionImport>
+    <FunctionImport Name="sp_creatediagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="Int32" />
+      <Parameter Name="definition" Mode="In" Type="Binary" />
+    </FunctionImport>
+    <FunctionImport Name="sp_dropdiagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(WP12_jj222kc_weatherAppModel.sp_helpdiagramdefinition_Result)">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(WP12_jj222kc_weatherAppModel.sp_helpdiagrams_Result)">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_renamediagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="new_diagramname" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="sp_upgraddiagrams" />
+    <FunctionImport Name="uspAddPosition" ReturnType="Collection(Decimal)">
+      <Parameter Name="Name" Mode="In" Type="String" />
+      <Parameter Name="Lat" Mode="In" Type="Double" />
+      <Parameter Name="Lng" Mode="In" Type="Double" />
+    </FunctionImport>
+    <FunctionImport Name="uspAddWeather">
+      <Parameter Name="Temperature" Mode="In" Type="Double" />
+      <Parameter Name="Validtime" Mode="In" Type="DateTime" />
+      <Parameter Name="City" Mode="In" Type="String" />
+      <Parameter Name="Symbol" Mode="In" Type="Int32" />
+      <Parameter Name="PositionId" Mode="In" Type="Int32" />
+      <Parameter Name="NextUpdate" Mode="In" Type="DateTime" />
+    </FunctionImport>
+    <FunctionImport Name="uspRemoveWeather">
+      <Parameter Name="PositionId" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="uspUpdateWeather">
+      <Parameter Name="Id" Mode="In" Type="Int32" />
+      <Parameter Name="Temperature" Mode="In" Type="Int32" />
+      <Parameter Name="City" Mode="In" Type="String" />
+      <Parameter Name="Symbol" Mode="In" Type="Int32" />
+      <Parameter Name="PositionId" Mode="In" Type="Int32" />
+      <Parameter Name="ValidTime" Mode="In" Type="DateTime" />
+      <Parameter Name="NextUpdate" Mode="In" Type="DateTime" />
+    </FunctionImport>
+  </EntityContainer>
+  <ComplexType Name="sp_helpdiagramdefinition_Result">
+    <Property Type="Int32" Name="version" Nullable="true" />
+    <Property Type="Binary" Name="definition" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="sp_helpdiagrams_Result">
+    <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+    <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+    <Property Type="Int32" Name="ID" Nullable="false" />
+    <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+    <Property Type="Int32" Name="OwnerID" Nullable="false" />
+  </ComplexType>
+</Schema>

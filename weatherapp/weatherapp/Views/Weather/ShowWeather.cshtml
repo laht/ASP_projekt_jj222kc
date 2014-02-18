@@ -1,0 +1,30 @@
+﻿    @model List<weatherapp.Models.Weather>
+@{
+    ViewBag.Title = "Femdygnsprognos";
+}
+<h1><a href="~/">Femdygnsprognos</a></h1>
+<div class="jumbotron">  
+    <h2>@Model[0].City</h2>  
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        var symbolPath = Model[i].Symbol.ToString() + ".png";
+        <div class="weather panel panel-info">
+            <div class="weather-info panel-heading">
+                <h3>@Model[i].ValidTime.DayOfWeek</h3>
+            </div>
+            <div class="panel-body">
+                <div class="weather-info">
+                    @Model[i].Temperature°
+                </div>
+                <div class="weather-info">
+                    <img src="~/Content/symbols/@symbolPath" alt="weatherSymbol" />
+                </div>
+                <div class="weather-info weather-date">
+                    <p>@Model[i].ValidTime.ToShortDateString()</p>
+                </div>
+            </div>            
+        </div>
+    }
+    <a href="~/">Ny sökning</a>
+    <div class="clearfix"></div>
+</div>
